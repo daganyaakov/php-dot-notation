@@ -598,4 +598,27 @@ class Dot implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable
     {
         return $this->items;
     }
+    
+    /*
+    * DotTemplate
+    * Inspired by handlebarsjs.com
+    *
+    * @param string $str 
+    * @return string $str
+    *
+    */
+ 	function tr($str = ''){
+		
+		$tr_map = [];
+		
+		preg_match_all('/{{([^_][a-zA-Z0-9_\-\.,]*)}}/', $str, $matches);
+		foreach ($matches[0] as $i => $key){
+			$path = (!empty($matches[1][$i])) ? array_pad(explode(',', $matches[1][$i]),2,'') : '';
+			if (!isset($tr_map[$key]))
+				$tr_map[$key] = $this->get($path[0],$path[1]);
+		}
+				
+		return strtr ( $str , $tr_map );
+	}    
+    
 }
